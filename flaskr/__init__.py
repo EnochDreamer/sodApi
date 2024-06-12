@@ -24,9 +24,9 @@ def create_app(test_config=None):
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT"
         )
-        # response.headers.add(
-        #     "Access-Control-Allow-Origin", "*"
-        # )
+        response.headers.add(
+            "Access-Control-Allow-Origin", "*"
+        )
         return response
 
 
