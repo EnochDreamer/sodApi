@@ -14,7 +14,7 @@ def create_app(test_config=None):
     db_setup(app)
 
     # enables CORS for any origin with the specified URI 
-    CORS(app , resources={r"\*/\*":{"origins":"*"}})
+    CORS(app , resources={r"\*/\*":{"origins":["http://localhost:5173","localhost:5173","https://fcs-sod-website.vercel.app/"]}})
     # Access control setups
     @app.after_request
     def after_request(response):
@@ -24,6 +24,9 @@ def create_app(test_config=None):
         response.headers.add(
             "Access-Control-Allow-Methods", "GET,POST,OPTIONS,DELETE,PUT"
         )
+        # response.headers.add(
+        #     "Access-Control-Allow-Origin", "*"
+        # )
         return response
 
 
@@ -128,13 +131,13 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':404,
-                'error':'user not found'})
+                'error':'user not found'}),404
         if not (current_user.registered):
             return jsonify ({
                 'success':False,
                 'status':422,
                 'error':'user not registered'
-                })
+                }),422
         print(os.environ.get('PAYSTACK_SECRET'))
         url=f"https://api.paystack.co/transaction/verify/{reference}"
         headers = {
@@ -166,4 +169,21 @@ def create_app(test_config=None):
                 'status':200,
                 'data':current_user.format()
             })
+
+    @app.route('/user',methods=['GET'])
+    def user():
+        current_user_email=request.args.get('email')
+        current_user=Register.query.filter_by(user_email=current_user_email).one_or_none()
+        if current_user is None:
+            return jsonify ({
+                'success':False,
+                'status':404,
+                'error':'user not found'}),404
+
+        return jsonify({
+                'success':True,
+                'status':200,
+                'data':current_user.format()
+            })
+
     return app
