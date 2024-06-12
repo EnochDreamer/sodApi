@@ -14,7 +14,7 @@ def create_app(test_config=None):
     db_setup(app)
 
     # enables CORS for any origin with the specified URI 
-    CORS(app , resources={r"\*/\*":{"origins":["http://localhost:5173","localhost:5173","https://fcs-sod-website.vercel.app/"]}})
+    CORS(app , resources={r"/*":{"origins":["http://localhost:5173","localhost:5173","https://fcs-sod-website.vercel.app/"]}})
     # Access control setups
     @app.after_request
     def after_request(response):
