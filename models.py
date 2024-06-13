@@ -41,15 +41,17 @@ class Register(db.Model):
     registered=db.Column(db.Boolean,nullable=False,default=False)
     paid=db.Column(db.Boolean,nullable=False, default=False)
     matric_no=db.Column(db.String(), nullable=False, default='')
-    # image=db.Column(db.String(),default='')
+    image=db.Column(db.String(),default='')
     def insert(self):
         try:
+            print("insert ran")
             db.session.add(self)
             db.session.commit()
         except Exception as e:
+            db.session.rollback()
             return jsonify({
                 "success":False,
-                "error":str(e)
+                "message":str(e)
             }),500
     def make_matric_no(self):
         _matric_no=f'SOD24/1/0{self.id}'
@@ -98,6 +100,6 @@ class Coupon(db.Model):
         except Exception as e:
             return jsonify({
                 "success":False,
-                "error":str(e)
+                "message":str(e)
             }),500
         

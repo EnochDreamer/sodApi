@@ -35,18 +35,18 @@ def create_app(test_config=None):
         current_user_email=request.args.get('email')
         #body=json.loads(request.form.get("data"))
         body=request.get_json()
-        if ('department' or 'user_name' or 'user_surname') not in body :
+        if ('image' or 'department' or 'user_name' or 'user_surname') not in body :
             return  jsonify ({
                 'success':False,
                 'status':422,
-                'error':'missing a required field'}),422
-        new_entry=Register(user_name=body['user_name'],user_surname=body['user_surname'],user_email=current_user_email,department=body['department'])
+                'message':'missing a required field'}),422
+        new_entry=Register(image=body['image'],user_name=body['user_name'],user_surname=body['user_surname'],user_email=current_user_email,department=body['department'])
         #new_entry.make_matric_no()
         # if request.files.get('image') is None:
         #     return  jsonify ({
         #         'success':False,
         #         'status':400,
-        #         'error':'missing a required field'}),422
+        #         'message':'missing a required field'}),422
         # new_entry.save_image(request.files.get('image'))
         new_entry.registered=True
         try:
@@ -60,7 +60,7 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':str(e)}),422
+                'message':str(e)}),422
                 
     @app.route('/coupon/make/<int:x>',methods=['GET'])
     def make_coupon(x):
@@ -89,23 +89,23 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':404,
-                'error':'coupon not recognised'}),404
+                'message':'coupon not recognised'}),404
         if coupon.used:
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':'coupon has been used'}),422
+                'message':'coupon has been used'}),422
         current_user=Register.query.filter_by(user_email=current_user_email).one_or_none()
         if current_user is None:
             return jsonify ({
                 'success':False,
                 'status':404,
-                'error':'user not found'}),404
+                'message':'user not found'}),404
         if not (current_user.registered):
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':'user not registered'
+                'message':'user not registered'
                 }),422
 
 
@@ -132,12 +132,12 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':404,
-                'error':'user not found'}),404
+                'message':'user not found'}),404
         if not (current_user.registered):
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':'user not registered'
+                'message':'user not registered'
                 }),422
         print(os.environ.get('PAYSTACK_SECRET'))
         url=f"https://api.paystack.co/transaction/verify/{reference}"
@@ -156,12 +156,12 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':'could not verify transaction'}),422
+                'message':'could not verify transaction'}),422
         if not (int(res['amount'])==int(request.args.get('amount'))):
             return jsonify ({
                 'success':False,
                 'status':422,
-                'error':'mismatch in amount to be paid'}),422
+                'message':'mismatch in amount to be paid'}),422
         current_user.paid=True
         current_user.make_matric_no()
         current_user.insert()
@@ -179,7 +179,7 @@ def create_app(test_config=None):
             return jsonify ({
                 'success':False,
                 'status':404,
-                'error':'user not found'}),404
+                'message':'user not found'}),404
 
         return jsonify({
                 'success':True,
