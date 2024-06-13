@@ -33,20 +33,21 @@ def create_app(test_config=None):
     @app.route('/register',methods=['POST'])
     def register():
         current_user_email=request.args.get('email')
-        body=json.loads(request.form.get("data"))
-        if ('user_email' or 'department' or 'user_name' or 'user_surname') not in body :
+        #body=json.loads(request.form.get("data"))
+        body=request.get_json()
+        if ('department' or 'user_name' or 'user_surname') not in body :
             return  jsonify ({
                 'success':False,
                 'status':422,
                 'error':'missing a required field'}),422
         new_entry=Register(user_name=body['user_name'],user_surname=body['user_surname'],user_email=current_user_email,department=body['department'])
         #new_entry.make_matric_no()
-        if request.files.get('image') is None:
-            return  jsonify ({
-                'success':False,
-                'status':400,
-                'error':'missing a required field'}),422
-        new_entry.save_image(request.files.get('image'))
+        # if request.files.get('image') is None:
+        #     return  jsonify ({
+        #         'success':False,
+        #         'status':400,
+        #         'error':'missing a required field'}),422
+        # new_entry.save_image(request.files.get('image'))
         new_entry.registered=True
         try:
             new_entry.insert()

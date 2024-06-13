@@ -41,7 +41,7 @@ class Register(db.Model):
     registered=db.Column(db.Boolean,nullable=False,default=False)
     paid=db.Column(db.Boolean,nullable=False, default=False)
     matric_no=db.Column(db.String(), nullable=False, default='')
-    image=db.Column(db.String(),default='')
+    # image=db.Column(db.String(),default='')
     def insert(self):
         try:
             db.session.add(self)
@@ -62,7 +62,6 @@ class Register(db.Model):
                 "firstname":self.user_name,
                 "surname":self.user_surname,
                 "email":self.user_email,
-                "image":self.image,
                 "matric_no":self.matric_no,
                 "department":self.department,
                 "is_registered":self.registered,
