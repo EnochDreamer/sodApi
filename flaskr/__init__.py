@@ -34,6 +34,7 @@ def create_app(test_config=None):
     def register():
         current_user_email=request.args.get('email')
         #body=json.loads(request.form.get("data"))
+        #hey
         body=request.get_json()
         if ('image' or 'department' or 'user_name' or 'user_surname') not in body :
             return  jsonify ({
