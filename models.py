@@ -64,6 +64,7 @@ class Register(db.Model):
                 "firstname":self.user_name,
                 "surname":self.user_surname,
                 "email":self.user_email,
+                "image":self.image,
                 "matric_no":self.matric_no,
                 "department":self.department,
                 "is_registered":self.registered,

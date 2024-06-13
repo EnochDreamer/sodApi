@@ -40,6 +40,13 @@ def create_app(test_config=None):
                 'success':False,
                 'status':422,
                 'message':'missing a required field'}),422
+        already_exists=Register.query.filter_by(user_email=current_user_email).one_or_none()
+        if already_exists:
+            return jsonify({
+                'success':False,
+                'status':403,
+                'message':'user already registered'
+            }),403
         new_entry=Register(image=body['image'],user_name=body['user_name'],user_surname=body['user_surname'],user_email=current_user_email,department=body['department'])
         #new_entry.make_matric_no()
         # if request.files.get('image') is None:
