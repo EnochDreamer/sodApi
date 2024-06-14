@@ -139,4 +139,43 @@ def requires_auth(f):
         return f(current_user_email, *args, **kwargs)
 
     return wrapper
-    
+    # @app.route('/coupon/<coupon>', methods=['GET'])
+    # def process_coupon(coupon):
+    #     current_user_email=request.args.get('email')
+    #     coupon=Coupon.query.filter_by(coupon=str(coupon)).one_or_none()
+    #     if coupon is None:
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':404,
+    #             'message':'coupon not recognised'}),404
+    #     if coupon.used:
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':422,
+    #             'message':'coupon has been used'}),422
+    #     current_user=Register.query.filter_by(user_email=current_user_email).one_or_none()
+    #     if current_user is None:
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':404,
+    #             'message':'user not found'}),404
+    #     if not (current_user.registered):
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':422,
+    #             'message':'user not registered'
+    #             }),422
+
+
+    #     # now get user and mark them paid
+    #     current_user.paid=True
+    #     current_user.make_matric_no()
+    #     current_user.insert()
+        
+    #     coupon.used=True
+    #     coupon.insert()
+    #     return jsonify({
+    #         "success":True,
+    #         "coupon":coupon.format(),
+    #         "data":current_user.format()
+    #     })

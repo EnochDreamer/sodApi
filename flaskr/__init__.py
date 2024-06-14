@@ -1,7 +1,6 @@
 from flask import Flask ,jsonify,request, abort
 from models import Register,Coupon,db_setup
 from flask_cors import CORS
-from auth import requires_auth
 from urllib.request import urlopen
 import dotenv
 import os
@@ -30,13 +29,36 @@ def create_app(test_config=None):
         return response
 
 
+    def process_coupon(coupon,current_user):
+        current_user_email=request.args.get('email')
+        coupon=Coupon.query.filter_by(coupon=str(coupon)).one_or_none()
+        if coupon is None:
+            abort(404)
+        if coupon.used:
+            abort(422)
+        # now get user and mark them paid
+        current_user.registered=True
+        current_user.paid=True
+        current_user.insert()
+        current_user.make_matric_no()
+        current_user.insert()
+        coupon.used=True
+        coupon.insert()
+        return current_user.format()
+       
+
+
+
+
+
+
     @app.route('/register',methods=['POST'])
     def register():
         current_user_email=request.args.get('email')
         #body=json.loads(request.form.get("data"))
-        #hey
         body=request.get_json()
-        if ('image' or 'department' or 'user_name' or 'user_surname') not in body :
+
+        if ('image' or 'department' or 'user_name' or 'user_surname' or 'coupon') not in body :
             return  jsonify ({
                 'success':False,
                 'status':422,
@@ -49,26 +71,14 @@ def create_app(test_config=None):
                 'message':'user already registered'
             }),403
         new_entry=Register(image=body['image'],user_name=body['user_name'],user_surname=body['user_surname'],user_email=current_user_email,department=body['department'])
-        #new_entry.make_matric_no()
-        # if request.files.get('image') is None:
-        #     return  jsonify ({
-        #         'success':False,
-        #         'status':400,
-        #         'message':'missing a required field'}),422
-        # new_entry.save_image(request.files.get('image'))
-        new_entry.registered=True
-        try:
-            new_entry.insert()
-            return jsonify({
-                'success':True,
-                'status':200,
-                'data':new_entry.format()
-            })
-        except Exception as e:
-            return jsonify ({
-                'success':False,
-                'status':422,
-                'message':str(e)}),422
+        process_coupon(body['coupon'],new_entry)
+        return jsonify({
+            'success':True,
+            'status':200,
+            'data':(Register.query.filter_by(user_email=current_user_email).one()).format()
+            
+        })
+
                 
     @app.route('/coupon/make/<int:x>',methods=['GET'])
     def make_coupon(x):
@@ -89,46 +99,7 @@ def create_app(test_config=None):
             "coupon":coupons
         })
 
-    @app.route('/coupon/<coupon>', methods=['GET'])
-    def process_coupon(coupon):
-        current_user_email=request.args.get('email')
-        coupon=Coupon.query.filter_by(coupon=str(coupon)).one_or_none()
-        if coupon is None:
-            return jsonify ({
-                'success':False,
-                'status':404,
-                'message':'coupon not recognised'}),404
-        if coupon.used:
-            return jsonify ({
-                'success':False,
-                'status':422,
-                'message':'coupon has been used'}),422
-        current_user=Register.query.filter_by(user_email=current_user_email).one_or_none()
-        if current_user is None:
-            return jsonify ({
-                'success':False,
-                'status':404,
-                'message':'user not found'}),404
-        if not (current_user.registered):
-            return jsonify ({
-                'success':False,
-                'status':422,
-                'message':'user not registered'
-                }),422
-
-
-        # now get user and mark them paid
-        current_user.paid=True
-        current_user.make_matric_no()
-        current_user.insert()
-        
-        coupon.used=True
-        coupon.insert()
-        return jsonify({
-            "success":True,
-            "coupon":coupon.format(),
-            "data":current_user.format()
-        })
+    
 
             
     
@@ -194,5 +165,22 @@ def create_app(test_config=None):
                 'status':200,
                 'data':current_user.format()
             })
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "resource not found"
+        }), 404
+    
+    @app.errorhandler(422)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 422,
+            "message": "unprocessible request, could be invalid coupon"
+        }), 422
+
 
     return app

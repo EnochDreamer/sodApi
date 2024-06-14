@@ -47,6 +47,7 @@ class Register(db.Model):
             print("insert ran")
             db.session.add(self)
             db.session.commit()
+            print("insert ran")
         except Exception as e:
             db.session.rollback()
             return jsonify({
