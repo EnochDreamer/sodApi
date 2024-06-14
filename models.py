@@ -89,7 +89,7 @@ class Coupon(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     used=db.Column(db.Boolean, default=False , nullable=False)
     coupon=db.Column(db.String(),unique=True)
-    created_at=db.Column(db.DateTime , default=datetime.now())
+    #created_at=db.Column(db.DateTime , default=datetime.now())
     def format(self):
         return({
             "id":self.id,

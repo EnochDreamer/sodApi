@@ -12,7 +12,7 @@ def create_app(test_config=None):
     app=Flask(__name__)
     db_setup(app)
 
-    # enables CORS for any origin with the specified URI 
+    # enables CORS for any origin with the specified URI
     CORS(app , resources={r"/*":{"origins":["http://localhost:5173","localhost:5173","https://fcs-sod-website.vercel.app/"]}})
     # Access control setups
     @app.after_request
@@ -47,8 +47,6 @@ def create_app(test_config=None):
         return True
        
     def verify_pay(reference,current_user):
-        
-        print(os.environ.get('PAYSTACK_SECRET'))
         url=f"https://api.paystack.co/transaction/verify/{reference}"
         headers = {
             'Authorization':os.environ.get('PAYSTACK_SECRET')
@@ -89,7 +87,7 @@ def create_app(test_config=None):
                 'status':422,
                 'message':'missing a required field'}),422
         print(body)
-        if ('coupon'  not in body) and ('reference' not in body):
+        if ('coupon' not in body) and ('reference' not in body):
             return  jsonify ({
                 'success':False,
                 'status':422,
