@@ -179,7 +179,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 422,
-            "message": "unprocessible request, could be invalid coupon"
+            "message": "unprocessible request, could be used/invalid coupon"
         }), 422
 
 
