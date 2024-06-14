@@ -179,3 +179,49 @@ def requires_auth(f):
     #         "coupon":coupon.format(),
     #         "data":current_user.format()
     #     })
+    # @app.route('/register/verify_pay/<reference>/',methods=['GET'])
+    # def verify_pay(reference):
+    #     current_user_email=request.args.get('email')
+    #     current_user=Register.query.filter_by(user_email=current_user_email).one_or_none()
+    #     if current_user is None:
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':404,
+    #             'message':'user not found'}),404
+    #     if not (current_user.registered):
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':422,
+    #             'message':'user not registered'
+    #             }),422
+    #     print(os.environ.get('PAYSTACK_SECRET'))
+    #     url=f"https://api.paystack.co/transaction/verify/{reference}"
+    #     headers = {
+    #         'Authorization':os.environ.get('PAYSTACK_SECRET')
+    #     }
+    #     response = requests.get(
+    #         url,
+    #         headers=headers,
+    #         timeout=30
+    #     )
+    #     print(response.json())
+    #     res=response.json()['data']
+    #     print(res)
+    #     if not (res['status']=='success'):
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':422,
+    #             'message':'could not verify transaction'}),422
+    #     if not (int(res['amount'])==int(request.args.get('amount'))):
+    #         return jsonify ({
+    #             'success':False,
+    #             'status':422,
+    #             'message':'mismatch in amount to be paid'}),422
+    #     current_user.paid=True
+    #     current_user.make_matric_no()
+    #     current_user.insert()
+    #     return jsonify({
+    #             'success':True,
+    #             'status':200,
+    #             'data':current_user.format()
+    #         })
