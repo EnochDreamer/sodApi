@@ -49,7 +49,7 @@ def create_app(test_config=None):
     def verify_pay(reference,current_user):
         url=f"https://api.paystack.co/transaction/verify/{reference}"
         headers = {
-            'Authorization':os.environ.get('PAYSTACK_SECRET')
+            'Authorization':os.environ.get('test_paysatck_secretkey')
         }
         response = requests.get(
             url,
