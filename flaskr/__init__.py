@@ -153,7 +153,7 @@ def create_app(test_config=None):
         return jsonify({
             "success": False,
             "error": 404,
-            "message": "Paystack payment in progres hang on !"
+            "message": "resource not found, could be Invalid coupon"
         }), 404
     
     @app.errorhandler(422)

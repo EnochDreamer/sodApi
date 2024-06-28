@@ -35,13 +35,13 @@ def db_setup(app,database_path=database_path,db=db):
 class Register(db.Model):
     __tablename__='register'
     id=db.Column(db.Integer,primary_key=True)
-    user_name=db.Column(db.String(30),nullable=False)
-    user_surname=db.Column(db.String(30),nullable=False)
-    user_email=db.Column(db.String(30),nullable=False,unique=True)
+    user_name=db.Column(db.String(),nullable=False)
+    user_surname=db.Column(db.String(),nullable=False)
+    user_email=db.Column(db.String(),nullable=False,unique=True)
     department=db.Column(db.String(),nullable=False, default='a-DOE')
     registered=db.Column(db.Boolean,nullable=False,default=False)
     paid=db.Column(db.Boolean,nullable=False, default=False)
-    matric_no=db.Column(db.String(), nullable=False, default='')
+    matric_no=db.Column(db.String(),nullable=False, default='')
     image=db.Column(db.String(),default='')
     def insert(self):
         try:
